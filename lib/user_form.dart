@@ -43,6 +43,7 @@ class __UserFormStateState extends State<UserForm> {
       }
 
       _key.currentState?.save();
+
       User user = User(
         name: controllerName.text, 
         email: controllerEmail.text, 
@@ -57,6 +58,7 @@ class __UserFormStateState extends State<UserForm> {
         int usersLength = userProvider.users.length;
         userProvider.users.insert(usersLength, user);
       }
+
       Navigator.popAndPushNamed(context, '/list');
 
     }
@@ -84,7 +86,6 @@ class __UserFormStateState extends State<UserForm> {
       ),
       body: ContainerAll(
         child: ListView.builder(
-          shrinkWrap: true,
           itemCount: 1,
           itemBuilder: (BuildContext context, indexBuilder) => 
           Center(
