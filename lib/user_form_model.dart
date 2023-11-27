@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:orm/container_all.dart';
 import 'package:orm/field_form.dart';
-import 'package:orm/user.dart';
+import 'package:orm/model/model.dart';
 import 'package:orm/user_provider.dart';
 
-class UserForm extends StatefulWidget {
-  const UserForm({super.key});
+class UserFormModel extends StatefulWidget {
+  const UserFormModel({super.key});
 
   @override
-  State<UserForm> createState() => _UserFormStateState();
+  State<UserFormModel> createState() => __UserFormModelStateState();
 }
 
-class _UserFormStateState extends State<UserForm> {
+class __UserFormModelStateState extends State<UserFormModel> {
+  
+  // Add new user
+  userAdd(String? name, String? email, String? password) async {
+    User user = User();
+    user.name = name;
+    user.email = email;
+    user.password = password;
+    await user.save();
+  }
 
   TextEditingController controllerName = TextEditingController();
   TextEditingController controllerEmail = TextEditingController();
@@ -58,6 +67,8 @@ class _UserFormStateState extends State<UserForm> {
       //   int usersLength = userProvider.users.length;
       //   userProvider.users.insert(usersLength, user);
       // }
+
+      userAdd(user.name, user.email, user.password);
 
       Navigator.popAndPushNamed(context, '/list');
 
@@ -130,6 +141,6 @@ class _UserFormStateState extends State<UserForm> {
           ),
         ),
       ),
-    );
+    ); 
   }
 }
