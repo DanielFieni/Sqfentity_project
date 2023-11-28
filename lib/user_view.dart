@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:orm/container_all.dart';
 import 'package:orm/field_form.dart';
+import 'package:orm/model/model.dart';
 import 'package:orm/user_provider.dart';
 
 // ignore: must_be_immutable
 class UserView extends StatelessWidget {
   UserView({super.key});
+
+  // Delete user
+  userDelete(index) async {
+    await User().select().id.equals(index).delete();
+  }
 
   TextEditingController controllerName = TextEditingController();
   TextEditingController controllerEmail = TextEditingController();
@@ -19,9 +25,9 @@ class UserView extends StatelessWidget {
 
     if(userProvider.indexUser != null) {
       index = userProvider.indexUser;
-      controllerName.text = userProvider.userSelected!.name;
-      controllerEmail.text = userProvider.userSelected!.email;
-      controllerPassword.text = userProvider.userSelected!.password;
+      controllerName.text = userProvider.nameUser!;
+      controllerEmail.text = userProvider.emailUser!;
+      controllerPassword.text = userProvider.passwordUser!;
     }
 
     return Scaffold(
@@ -87,9 +93,10 @@ class UserView extends StatelessWidget {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () {
-                    userProvider.indexUser = null;
-                    userProvider.users.removeAt(index!);
-                    Navigator.popAndPushNamed(context, '/create');
+                    // userProvider.indexUser = null;
+                    // userProvider.users.removeAt(index!);
+                    userDelete(index!);
+                    Navigator.popAndPushNamed(context, '/list');
                   }, 
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Colors.red),

@@ -6,7 +6,9 @@ class UserProvider extends InheritedWidget {
 
   final Widget child;
   List<User> users = [];
-  User? userSelected;
+  String? nameUser;
+  String? emailUser;
+  String? passwordUser;
   int? indexUser;
 
   UserProvider({

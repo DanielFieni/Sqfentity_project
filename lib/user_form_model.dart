@@ -14,11 +14,12 @@ class UserFormModel extends StatefulWidget {
 class __UserFormModelStateState extends State<UserFormModel> {
   
   // Add new user
-  userAdd(String? name, String? email, String? password) async {
+  userAdd(String? name, String? email, String? password, int? id) async {
     User user = User();
     user.name = name;
     user.email = email;
     user.password = password;
+    user.id = id;
     await user.save();
   }
 
@@ -34,9 +35,9 @@ class __UserFormModelStateState extends State<UserFormModel> {
 
     if(userProvider.indexUser != null) {
       index = userProvider.indexUser;
-      controllerName.text = userProvider.userSelected!.name;
-      controllerEmail.text = userProvider.userSelected!.email;
-      controllerPassword.text = userProvider.userSelected!.password;
+      controllerName.text = userProvider.nameUser!;
+      controllerEmail.text = userProvider.emailUser!;
+      controllerPassword.text = userProvider.passwordUser!;
       setState(() {
         title = 'Edit user';
       });
@@ -54,21 +55,13 @@ class __UserFormModelStateState extends State<UserFormModel> {
       _key.currentState?.save();
 
       User user = User(
+        id: index,
         name: controllerName.text, 
         email: controllerEmail.text, 
         password: controllerPassword.text
       );
       
-      // if(index != null) {
-      //   // Edit user
-      //   userProvider.users[index] = user;
-      // } else {
-      //   // Add user
-      //   int usersLength = userProvider.users.length;
-      //   userProvider.users.insert(usersLength, user);
-      // }
-
-      userAdd(user.name, user.email, user.password);
+      userAdd(user.name, user.email, user.password, user.id);
 
       Navigator.popAndPushNamed(context, '/list');
 
@@ -77,6 +70,11 @@ class __UserFormModelStateState extends State<UserFormModel> {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
+        leading: BackButton(
+          onPressed: () {
+            Navigator.popAndPushNamed(context, '/list');
+          },
+        ),
         actions: [
           Container(
             decoration: const BoxDecoration(

@@ -35,6 +35,7 @@ class FieldForm extends StatelessWidget {
         if(isEmail && !value.contains('@')) {
           return "Digite um email válido";
         }
+        return null;
       },
     );
   }

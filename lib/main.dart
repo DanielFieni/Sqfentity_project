@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:orm/container_all.dart';
 import 'package:orm/model/model.dart';
@@ -25,12 +27,18 @@ class _MainAppState extends State<MainApp> {
     users = await User().select().toList();
     setState(() {});
   }
+
   // Delete user
   userDelete(index) async {
     await User().select().id.equals(index).delete();
     loadData();
   }
 
+  // Load a especific user
+  Future<User?> getUserFromDatabase(index) async {
+    User? user = await User().select().id.equals(index).toSingle();
+    return user;
+  }
 
   @override
   void initState() {
@@ -63,12 +71,6 @@ class _MainAppState extends State<MainApp> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('User list'),
-          leading: BackButton(
-            onPressed: () {
-              // userProvider.indexUser = null;
-              Navigator.popAndPushNamed(context, '/create');
-            },
-          ),
           actions: [
             IconButton(
               onPressed: () {
@@ -91,15 +93,23 @@ class _MainAppState extends State<MainApp> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      onPressed: () {
+                      onPressed: () async {
+                        User? userFromDatabase = await getUserFromDatabase(users[indexBuilder].id);
+                        userProvider.nameUser = userFromDatabase?.name;
+                        userProvider.emailUser = userFromDatabase?.email;
+                        userProvider.passwordUser = userFromDatabase?.password;
+                        userProvider.indexUser = userFromDatabase?.id;
                         Navigator.popAndPushNamed(context, '/create');
                       },
                       icon: const Icon(Icons.edit),
                     ),
                     IconButton(
-                      onPressed: () {
-                        // userProvider.userSelected = users[indexBuilder];
-                        // userProvider.indexUser = indexBuilder;
+                      onPressed: () async {
+                        User? userFromDatabase = await getUserFromDatabase(users[indexBuilder].id);
+                        userProvider.nameUser = userFromDatabase?.name;
+                        userProvider.emailUser = userFromDatabase?.email;
+                        userProvider.passwordUser = userFromDatabase?.password;
+                        userProvider.indexUser = userFromDatabase?.id;
                         Navigator.popAndPushNamed(context, '/view');
                       },
                       icon: const Icon(Icons.visibility, color: Colors.blue),
@@ -107,15 +117,19 @@ class _MainAppState extends State<MainApp> {
                     IconButton(
                       onPressed: () {
                         userProvider.indexUser = null;
-                        print(users[indexBuilder].id);
                         userDelete(users[indexBuilder].id);
-                        // Navigator.popAndPushNamed(context, '/list');
                       },
                       icon: const Icon(Icons.delete, color: Colors.red),
                     )
                   ],
                 ),
-                title: Text(users[indexBuilder].name ?? ''),
+                title: // User Id
+                Text(
+                  users[indexBuilder].name ?? '',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
               ),
             )
           ),
