@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:orm/container_all.dart';
+import 'package:orm/fav_menu_button.dart';
 import 'package:orm/model/model.dart';
 import 'package:orm/user_form_model.dart';
 import 'package:orm/user_provider.dart';
@@ -27,6 +28,17 @@ class _MainAppState extends State<MainApp> {
     users = await User().select().toList();
     setState(() {});
   }
+  
+  // Order by name ASC
+  // users = await User().select().orderBy("name").toList();
+
+  // Order by name DESC
+  // users = await User().select().orderByDesc("name").toList();
+
+  // Order by five top user by name
+  // users = await User().select().orderBy("name").top(5).toList();
+
+  
 
   // Delete user
   userDelete(index) async {
@@ -47,39 +59,33 @@ class _MainAppState extends State<MainApp> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return UserProvider(
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'ORM For Flutter',
-        home: _body(),
-        routes: {
-          '/create': (_) => const UserFormModel(), 
-          // List of the users
-          '/list': (_) => const MainApp(),
-          // Edit user
-          '/view': (_) => UserView(),
-        },
+Widget build(BuildContext context) {
+  return UserProvider(
+    child: MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'ORM For Flutter',
+      home: Scaffold(
+        appBar: AppBar(
+          title: const Text('ORM For Flutter'),
+        ),
+        body: _body(),
+        floatingActionButton: const FavMenuButton(),
       ),
-    );
-  }
+      routes: {
+        '/create': (_) => const UserFormModel(),
+        '/list': (_) => const MainApp(),
+        '/view': (_) => UserView(),
+      },
+    ),
+  );
+}
+
 
   _body() {
   return Builder(
     builder: (BuildContext context) {
       UserProvider userProvider = UserProvider.of(context) as UserProvider;
       return Scaffold(
-        appBar: AppBar(
-          title: const Text('User list'),
-          actions: [
-            IconButton(
-              onPressed: () {
-                Navigator.popAndPushNamed(context, '/create');
-              },
-              icon: const Icon(Icons.add),
-            )
-          ],
-        ),
         body: ContainerAll(
           child: ListView.builder(
             itemCount: users.length,
@@ -99,7 +105,7 @@ class _MainAppState extends State<MainApp> {
                         userProvider.emailUser = userFromDatabase?.email;
                         userProvider.passwordUser = userFromDatabase?.password;
                         userProvider.indexUser = userFromDatabase?.id;
-                        Navigator.popAndPushNamed(context, '/create');
+                        if(context.mounted) Navigator.popAndPushNamed(context, '/create');
                       },
                       icon: const Icon(Icons.edit),
                     ),
@@ -110,7 +116,7 @@ class _MainAppState extends State<MainApp> {
                         userProvider.emailUser = userFromDatabase?.email;
                         userProvider.passwordUser = userFromDatabase?.password;
                         userProvider.indexUser = userFromDatabase?.id;
-                        Navigator.popAndPushNamed(context, '/view');
+                        if(context.mounted) Navigator.popAndPushNamed(context, '/view');
                       },
                       icon: const Icon(Icons.visibility, color: Colors.blue),
                     ),
